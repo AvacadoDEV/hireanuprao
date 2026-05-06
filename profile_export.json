@@ -1,0 +1,139 @@
+{
+  "candidate": {
+    "name": "Anup Rao",
+    "summary": "Associate Product Manager with 8+ years spanning product, engineering, and operations. Currently driving roadmap for internal ad-serving and campaign validation systems at X (Twitter). Background in React/Node frontend development, platform engineering, and enterprise ops gives me an unusually technical lens for PM work. Comfortable in both 0-to-1 and scale contexts, with a track record of improving system throughput, client satisfaction, and cross-functional delivery."
+  },
+  "identity": {
+    "email": "Raonoops@gmail.com",
+    "phone": "905-782-5239",
+    "linkedin": "https://www.linkedin.com/in/raoanup",
+    "github": "",
+    "location": "Ontario, Canada",
+    "target_roles": [
+      "Product Manager",
+      "Senior Product Manager",
+      "Associate Product Manager",
+      "Technical Product Manager"
+    ],
+    "target_industries": [
+      "AdTech",
+      "SaaS",
+      "Developer Tools",
+      "E-Commerce",
+      "FinTech",
+      "Media"
+    ],
+    "seniority": "mid",
+    "open_to_remote": true,
+    "open_to_relocation": false
+  },
+  "skills": [
+    { "name": "Product Strategy", "category": "product" },
+    { "name": "Agile", "category": "product" },
+    { "name": "Product Roadmapping", "category": "product" },
+    { "name": "Stakeholder Management", "category": "product" },
+    { "name": "Go-To-Market Strategy", "category": "product" },
+    { "name": "A/B Testing", "category": "product" },
+    { "name": "User Research", "category": "product" },
+    { "name": "PRD Writing", "category": "product" },
+    { "name": "Data Analytics", "category": "analytics" },
+    { "name": "SQL", "category": "analytics" },
+    { "name": "Grafana", "category": "analytics" },
+    { "name": "Datadog", "category": "analytics" },
+    { "name": "Prometheus", "category": "analytics" },
+    { "name": "Jira", "category": "tools" },
+    { "name": "Confluence", "category": "tools" },
+    { "name": "JavaScript", "category": "engineering" },
+    { "name": "React", "category": "engineering" },
+    { "name": "Node.js", "category": "engineering" },
+    { "name": "REST API", "category": "engineering" },
+    { "name": "AWS", "category": "engineering" },
+    { "name": "Advertising Technology", "category": "domain" },
+    { "name": "Cross-Functional Leadership", "category": "leadership" },
+    { "name": "Technical Implementation", "category": "engineering" },
+    { "name": "ABAP", "category": "engineering" },
+    { "name": "SAPUI5", "category": "engineering" },
+    { "name": "SAP HANA", "category": "engineering" }
+  ],
+  "experience": [
+    {
+      "role": "Associate Product Manager",
+      "company": "X (Previously Twitter)",
+      "period": "May 2024 – Present",
+      "description": "Drove the roadmap for internal ad-serving and campaign validation systems supporting global advertisers and agencies. Partnered with engineering, design, and ad operations teams to enhance creative rendering, targeting accuracy, and measurement reliability across large-scale ad systems. Prioritized engineering backlogs using data-driven insights from Datadog and Grafana, improving campaign throughput by 18%. Monitored product KPIs (impression latency, campaign success rate) to guide iteration and optimize ad delivery experiences."
+    },
+    {
+      "role": "Associate Product Manager",
+      "company": "Artohlam Group Inc.",
+      "period": "Sep 2023 – Apr 2024",
+      "description": "Defined product requirements documents (PRDs) for truck check-in automation enhancing client satisfaction and retention. Collaborated with leadership to prioritize feature roadmap balancing operational scalability with client-driven needs. Managed end-to-end testing and rollout of new platform APIs, coordinating across design, QA, and customer onboarding teams."
+    },
+    {
+      "role": "Frontend Solutions Developer",
+      "company": "Webtrigon",
+      "period": "May 2021 – Jul 2022",
+      "description": "Built custom UI React components and complex web forms integrating REST API services, enhancing customer validation processes. Developed JavaScript logic for business-facing web applications, contributing to the Packages Bundle + Save flow on the main website. Created training materials and conducted workshops to ensure effective client onboarding and product adoption."
+    },
+    {
+      "role": "Platform Developer",
+      "company": "Scaler (E-Learning Systems)",
+      "period": "Apr 2020 – Apr 2021",
+      "description": "Contributed to the development and maintenance of Scaler's e-learning platform, supporting over 15,000 career transformations. Developed and optimized features for a platform serving 900+ placement partners, ensuring scalability and performance. Designed and maintained RESTful APIs to facilitate seamless integration between Scaler's web application and mobile platforms."
+    },
+    {
+      "role": "Enterprise Operations Analyst",
+      "company": "Accenture",
+      "period": "Dec 2018 – Mar 2020",
+      "description": "Maintained and developed data within the SAP ecosystem, leveraging ABAP, SAPUI5, and SAP HANA technologies. Enhanced vendor invoice workflow efficiency by 15% through process optimization and format pattern recognition."
+    },
+    {
+      "role": "Quality Analyst",
+      "company": "Pole to Win",
+      "period": "Mar 2016 – Nov 2018",
+      "description": "Developed and executed comprehensive test plans and workforce breakdown structures for games released on PlayStation and Xbox. Tested hardware and software within tightly controlled sandbox environments prior to release to production."
+    }
+  ],
+  "projects": [
+    {
+      "title": "Ad-Serving Roadmap & Campaign Validation (X / Twitter)",
+      "stack": "Datadog, Grafana, Prometheus, REST API, Agile",
+      "repo": "",
+      "impact": "Improved campaign throughput by 18% through data-driven backlog prioritization and KPI monitoring (impression latency, campaign success rate)."
+    },
+    {
+      "title": "Truck Check-In Automation (Artohlam)",
+      "stack": "PRD, REST API, QA, Agile",
+      "repo": "",
+      "impact": "Automated truck check-in flow, improving client satisfaction and retention; managed end-to-end API rollout across design, QA, and onboarding teams."
+    },
+    {
+      "title": "Packages Bundle + Save Flow (Webtrigon)",
+      "stack": "React, JavaScript, REST API",
+      "repo": "",
+      "impact": "Built the Bundle + Save e-commerce flow on the main website, integrating REST APIs with React components to improve customer validation and conversion."
+    },
+    {
+      "title": "E-Learning Platform Scaling (Scaler)",
+      "stack": "Node.js, REST API, SQL",
+      "repo": "",
+      "impact": "Supported 15,000+ career transformations and 900+ placement partners by developing and optimizing platform features and RESTful APIs."
+    },
+    {
+      "title": "Vendor Invoice Workflow Optimization (Accenture)",
+      "stack": "ABAP, SAPUI5, SAP HANA",
+      "repo": "",
+      "impact": "Reduced vendor invoice processing time by 15% through SAP workflow automation and format pattern recognition."
+    }
+  ],
+  "education": [
+    { "title": "Masters in Computer Science — Algoma University, Ontario, Canada (2024)" },
+    { "title": "Bachelors in Computer Science — Amity University, India (2015)" }
+  ],
+  "certifications": [],
+  "achievements": [
+    { "title": "Improved campaign throughput by 18% at X through data-driven backlog prioritization" },
+    { "title": "Enhanced vendor invoice workflow efficiency by 15% at Accenture" },
+    { "title": "Supported 15,000+ career transformations on Scaler platform" },
+    { "title": "Served 900+ placement partners at Scaler with zero downtime during scaling" }
+  ]
+}
