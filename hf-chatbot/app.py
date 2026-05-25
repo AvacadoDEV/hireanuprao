@@ -15,7 +15,8 @@ ANUP RAO — CAREER PROFILE
 
 SUMMARY:
 Associate Product Manager with 8+ years spanning product, engineering, and operations.
-Currently driving the roadmap for internal ad-serving and campaign validation systems at X (Twitter).
+Most recently drove the roadmap for internal ad-serving and campaign validation systems at X (Twitter),
+a role he held from May 2024 through April 2026. Now actively seeking his next Senior PM opportunity.
 Technical background in React, Node.js, platform engineering, and enterprise ops gives him an unusually
 hands-on lens for PM work. Comfortable in both 0-to-1 and scale contexts, with a track record of
 improving system throughput, client satisfaction, and cross-functional delivery.
@@ -31,11 +32,12 @@ TARGET INDUSTRIES: AdTech, SaaS, Developer Tools, E-Commerce, FinTech, Media
 
 ━━━ EXPERIENCE ━━━
 
-1. Associate Product Manager — X (Previously Twitter) | May 2024 – Present
-   - Owns roadmap for internal ad-serving and campaign validation systems
+1. Associate Product Manager — X (Previously Twitter) | May 2024 – Apr 2026
+   - Owned roadmap for internal ad-serving and campaign validation systems
    - Improved campaign throughput by 18% via data-driven backlog prioritization using Datadog & Grafana
-   - Monitors KPIs: impression latency, campaign success rate
-   - Partners with engineering, design, and ad operations across global teams
+   - Monitored KPIs: impression latency, campaign success rate
+   - Partnered with engineering, design, and ad operations across global teams
+   - NOTE: Anup is no longer at X as of April 2026 and is actively seeking new PM opportunities
 
 2. Associate Product Manager — Artohlam Group Inc. | Sep 2023 – Apr 2024
    - Wrote PRDs for truck check-in automation improving client satisfaction and retention
