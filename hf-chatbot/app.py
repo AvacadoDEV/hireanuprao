@@ -16,10 +16,13 @@ ANUP RAO — CAREER PROFILE
 SUMMARY:
 Associate Product Manager with 8+ years spanning product, engineering, and operations.
 Most recently drove the roadmap for internal ad-serving and campaign validation systems at X (Twitter),
-a role he held from May 2024 through April 2026. Now actively seeking his next Senior PM opportunity.
-Technical background in React, Node.js, platform engineering, and enterprise ops gives him an unusually
-hands-on lens for PM work. Comfortable in both 0-to-1 and scale contexts, with a track record of
-improving system throughput, client satisfaction, and cross-functional delivery.
+a role he held from May 2024 through April 2026. Now actively seeking his next opportunity.
+Over the past 2 months he has been upskilling in Java, Spring Boot, and backend engineering,
+and sharpening his DSA fundamentals through LeetCode. He is open to both Senior PM roles and
+Backend Developer / Software Engineer roles. Technical background in React, Node.js, platform
+engineering, and enterprise ops gives him an unusually hands-on lens. Comfortable in both 0-to-1
+and scale contexts, with a track record of improving system throughput, client satisfaction, and
+cross-functional delivery.
 
 CONTACT:
 - Email: Raonoops@gmail.com
@@ -27,7 +30,7 @@ CONTACT:
 - Location: Ontario, Canada
 - Open to remote: Yes | Open to relocation: No
 
-TARGET ROLES: Product Manager, Senior PM, Associate PM, Technical PM
+TARGET ROLES: Senior Product Manager, Technical PM, Backend Developer, Backend Engineer, Software Engineer
 TARGET INDUSTRIES: AdTech, SaaS, Developer Tools, E-Commerce, FinTech, Media
 
 ━━━ EXPERIENCE ━━━
@@ -69,7 +72,7 @@ TARGET INDUSTRIES: AdTech, SaaS, Developer Tools, E-Commerce, FinTech, Media
 ━━━ SKILLS ━━━
 Product:     Roadmapping, PRD Writing, Agile, A/B Testing, User Research, GTM, Stakeholder Management
 Analytics:   SQL, Datadog, Grafana, Prometheus, KPI Design
-Engineering: React, JavaScript, Node.js, REST API, AWS, ABAP, SAPUI5, SAP HANA
+Engineering: Java (actively upskilling), Spring Boot (actively upskilling), DSA / LeetCode, React, JavaScript, Node.js, REST API, AWS, ABAP, SAPUI5, SAP HANA
 Tools:       Jira, Confluence
 Domain:      Advertising Technology, Cross-Functional Leadership
 
@@ -121,22 +124,9 @@ _theme = gr.themes.Soft(
 demo = gr.ChatInterface(
     fn=respond,
     title="Ask About Anup Rao",
-    description=(
-        "I'm an AI assistant loaded with Anup's full career profile. "
-        "Ask me about his experience, skills, PM approach, or fit for your role."
-    ),
-    examples=[
-        "What's Anup's current role at X?",
-        "What PM skills does he bring to a team?",
-        "Is he open to remote roles?",
-        "What's his technical background?",
-        "What are his biggest wins?",
-        "What industries is he targeting?",
-        "How does his engineering experience make him a better PM?",
-    ],
-    cache_examples=False,
-    chatbot=gr.Chatbot(height=420),
-    textbox=gr.Textbox(placeholder="e.g. What's Anup's experience in AdTech?", container=False),
+    description="I'm an AI assistant loaded with Anup's full career profile. Ask me about his experience, skills, or fit for your role.",
+    chatbot=gr.Chatbot(height=380, show_label=False),
+    textbox=gr.Textbox(placeholder="Ask me anything about Anup…", container=False, scale=7),
 )
 
 if __name__ == "__main__":

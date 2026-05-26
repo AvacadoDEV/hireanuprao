@@ -1,7 +1,7 @@
 {
   "candidate": {
     "name": "Anup Rao",
-    "summary": "Associate Product Manager with 8+ years spanning product, engineering, and operations. Currently driving roadmap for internal ad-serving and campaign validation systems at X (Twitter). Background in React/Node frontend development, platform engineering, and enterprise ops gives me an unusually technical lens for PM work. Comfortable in both 0-to-1 and scale contexts, with a track record of improving system throughput, client satisfaction, and cross-functional delivery."
+    "summary": "Associate Product Manager with 8+ years spanning product, engineering, and operations. Most recently drove the roadmap for ad-serving and campaign validation systems at X (Twitter). Background in React/Node, platform engineering, and enterprise ops gives me an unusually technical lens for PM work. Currently upskilling in Java, Spring Boot, and DSA — open to both Senior PM and Backend Developer roles. Comfortable in 0-to-1 and scale contexts, with a track record of improving throughput, client satisfaction, and cross-functional delivery."
   },
   "identity": {
     "email": "Raonoops@gmail.com",
@@ -12,8 +12,10 @@
     "target_roles": [
       "Product Manager",
       "Senior Product Manager",
-      "Associate Product Manager",
-      "Technical Product Manager"
+      "Technical Product Manager",
+      "Backend Developer",
+      "Backend Engineer",
+      "Software Engineer"
     ],
     "target_industries": [
       "AdTech",
@@ -43,6 +45,9 @@
     { "name": "Prometheus", "category": "analytics" },
     { "name": "Jira", "category": "tools" },
     { "name": "Confluence", "category": "tools" },
+    { "name": "Java", "category": "engineering" },
+    { "name": "Spring Boot", "category": "engineering" },
+    { "name": "Data Structures & Algorithms", "category": "engineering" },
     { "name": "JavaScript", "category": "engineering" },
     { "name": "React", "category": "engineering" },
     { "name": "Node.js", "category": "engineering" },
