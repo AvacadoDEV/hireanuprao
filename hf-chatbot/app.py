@@ -145,7 +145,7 @@ with gr.Blocks(theme=_theme, css=_css, title="Ask About Anup Rao") as demo:
     )
     gr.ChatInterface(
         fn=respond,
-        chatbot=gr.Chatbot(height=None, show_label=False, min_height=0),
+        chatbot=gr.Chatbot(show_label=False),
         textbox=gr.Textbox(placeholder="Ask me anything about Anup…", container=False),
         submit_btn="Send",
     )
