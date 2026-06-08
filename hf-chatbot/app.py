@@ -121,13 +121,34 @@ _theme = gr.themes.Soft(
     font=gr.themes.GoogleFont("Inter"),
 )
 
-demo = gr.ChatInterface(
-    fn=respond,
-    title="Ask About Anup Rao",
-    description="I'm an AI assistant loaded with Anup's full career profile. Ask me about his experience, skills, or fit for your role.",
-    chatbot=gr.Chatbot(height=380, show_label=False),
-    textbox=gr.Textbox(placeholder="Ask me anything about Anup…", container=False, scale=7),
-)
+_css = """
+/* Remove fixed height from the empty chatbot area — let it grow with messages */
+.chatbot-container, .chatbot, [data-testid="chatbot"] {
+    min-height: 0 !important;
+    height: auto !important;
+}
+.chatbot .wrap, .chatbot .bubble-wrap {
+    min-height: 0 !important;
+}
+/* Tighten up the overall layout padding */
+.gradio-container {
+    padding-top: 12px !important;
+}
+footer { display: none !important; }
+"""
+
+with gr.Blocks(theme=_theme, css=_css, title="Ask About Anup Rao") as demo:
+    gr.Markdown("## Ask About Anup Rao")
+    gr.Markdown(
+        "I'm an AI assistant loaded with Anup's full career profile. "
+        "Ask me about his experience, skills, or fit for your role."
+    )
+    gr.ChatInterface(
+        fn=respond,
+        chatbot=gr.Chatbot(height=None, show_label=False, min_height=0),
+        textbox=gr.Textbox(placeholder="Ask me anything about Anup…", container=False),
+        submit_btn="Send",
+    )
 
 if __name__ == "__main__":
-    demo.launch(theme=_theme)
+    demo.launch()
