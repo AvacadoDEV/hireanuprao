@@ -1,0 +1,40 @@
+name: Sync to HuggingFace Space
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "hf-chatbot/**"
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push hf-chatbot/ to HuggingFace Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+
+          # Clone the HF Space repo
+          git clone https://user:${HF_TOKEN}@huggingface.co/spaces/raonoops/ask-anup-rao hf-space
+
+          # Sync contents of hf-chatbot/ into the space root
+          rsync -av --delete \
+            --exclude='.git' \
+            hf-chatbot/ hf-space/
+
+          # Commit and push if anything changed
+          cd hf-space
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to sync."
+          else
+            git commit -m "Sync from GitHub: ${{ github.sha }}"
+            git push
+          fi
