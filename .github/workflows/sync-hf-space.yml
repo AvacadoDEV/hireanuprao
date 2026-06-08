@@ -21,8 +21,8 @@ jobs:
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
 
-          # Clone the HF Space repo
-          git clone https://user:${HF_TOKEN}@huggingface.co/spaces/raonoops/ask-anup-rao hf-space
+          # Clone the HF Space repo (username is raonoops)
+          git clone https://raonoops:${HF_TOKEN}@huggingface.co/spaces/raonoops/ask-anup-rao hf-space
 
           # Sync contents of hf-chatbot/ into the space root
           rsync -av --delete \
