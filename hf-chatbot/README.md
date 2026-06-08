@@ -1,7 +1,7 @@
 ---
 title: Ask Anup Rao
 emoji: 💬
-colorFrom: violet
+colorFrom: purple
 colorTo: indigo
 sdk: gradio
 sdk_version: "5.0.0"
