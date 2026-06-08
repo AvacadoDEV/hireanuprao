@@ -26,10 +26,12 @@ jobs:
           # Clone the HF Space repo (username is raonoops)
           git clone https://raonoops:${HF_TOKEN}@huggingface.co/spaces/raonoops/ask-anup-rao hf-space
 
-          # Sync contents of hf-chatbot/ into the space root
+          # Sync contents of hf-chatbot/ into the space root (force LF line endings)
           rsync -av --delete \
             --exclude='.git' \
             hf-chatbot/ hf-space/
+          find hf-space -type f \( -name "*.py" -o -name "*.txt" -o -name "*.md" \) \
+            -exec sed -i 's/\r//' {} +
 
           # Commit and push if anything changed
           cd hf-space
