@@ -139,12 +139,29 @@
     .case-4 { grid-column: 1 / 4; grid-row: span 1; }
     .case-5 { grid-column: 4 / 7; grid-row: span 1; }
     .case-6 { grid-column: 1 / 7; grid-row: span 1; }
+    .case-7 { grid-column: 1 / 7; grid-row: span 1; }
 
     @media (max-width: 760px) {
       .grid { grid-template-columns: 1fr; }
-      .case-1, .case-2, .case-3, .case-4, .case-5, .case-6 { grid-column: 1; grid-row: auto; }
+      .case-1, .case-2, .case-3, .case-4, .case-5, .case-6, .case-7 { grid-column: 1; grid-row: auto; }
       .hero h1 { font-size: 30px; }
     }
+
+    /* ── RUBRIC TOOL ── */
+    .rubric-row { margin-bottom: 22px; }
+    .rubric-row .row-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+    .rubric-row label { font-size: 13px; color: var(--text); font-family: var(--font-mono); }
+    .rubric-pip { font-family: var(--font-mono); font-size: 12.5px; background: rgba(255,255,255,0.06); padding: 2px 9px; border-radius: 5px; display: inline-block; transition: color .15s ease; }
+    .rubric-row input[type=range] { width: 100%; -webkit-appearance: none; height: 6px; border-radius: 4px; cursor: pointer; }
+    .rubric-row input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 15px; height: 15px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 4px rgba(255,255,255,0.08); }
+    #verdict-block { display: flex; gap: 14px; padding-top: 20px; margin-top: 6px; border-top: 1px solid var(--border); transition: transform .25s ease; }
+    #verdict-rail { width: 3px; border-radius: 2px; flex-shrink: 0; background: #34d399; transition: background .3s ease; }
+    #rubric-verdict { font-family: var(--font-serif); font-size: 19px; font-weight: 600; margin-bottom: 12px; }
+    #rubric-reasoning { font-size: 14px; line-height: 1.7; color: var(--text-muted); }
+    @keyframes pip-pulse { 0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); } }
+    @keyframes rail-flash { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.25); } 100% { box-shadow: 0 0 0 12px rgba(255,255,255,0); } }
+    .pip-hit { animation: pip-pulse .3s ease; }
+    .rail-hit { animation: rail-flash .5s ease; }
 
     footer { border-top: 1px solid var(--border); padding: 32px 0; }
     footer .container { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text-dim); }
@@ -287,6 +304,24 @@
       grid.appendChild(card);
     });
 
+    const rubricCard = document.createElement('div');
+    rubricCard.className = 'case-card case-7';
+    rubricCard.innerHTML = `
+      <div>
+        <div class="top-row">
+          <span class="idx">07</span>
+          <span class="tag" style="background:var(--c-accent-bg);color:var(--c-accent-text);">the rubric</span>
+        </div>
+        <h3>how I score a feature request</h3>
+        <p class="hook">a live tool, not a write up. move five inputs, watch the verdict react.</p>
+      </div>
+      <div class="read-link">try it
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+    `;
+    rubricCard.addEventListener('click', openRubric);
+    grid.appendChild(rubricCard);
+
     const overlay = document.getElementById('overlay');
     const panel = document.getElementById('panel');
     const panelBody = document.getElementById('panel-body');
@@ -317,6 +352,128 @@
       overlay.style.display = 'none';
       document.body.style.overflow = '';
       document.body.classList.remove('reading-mode');
+    }
+
+    const rubricFields = [
+      { id: 'reach', label: 'reach', value: 6 },
+      { id: 'impact', label: 'impact', value: 6 },
+      { id: 'confidence', label: 'confidence', value: 6 },
+      { id: 'effort', label: 'effort', value: 5 },
+      { id: 'fit', label: 'strategic fit', value: 5 }
+    ];
+    const rubricVals = {};
+    rubricFields.forEach(f => rubricVals[f.id] = f.value);
+    let lastVerdict = null;
+
+    function colorForValue(v) { if (v <= 3) return '#f87171'; if (v <= 6) return '#fbbf24'; return '#34d399'; }
+    function sliderBackground(v, color) {
+      const pct = (v - 1) / 9 * 100;
+      return `linear-gradient(90deg, ${color} 0%, ${color} ${pct}%, rgba(255,255,255,0.1) ${pct}%, rgba(255,255,255,0.1) 100%)`;
+    }
+
+    function updateRubric() {
+      const { reach, impact, confidence, effort, fit } = rubricVals;
+      const score = Math.round((reach * impact * confidence) / effort);
+      const weakest = Object.entries({ reach, impact, confidence, fit }).sort((a, b) => a[1] - b[1])[0];
+      let verdict, reasoning, rail;
+
+      if (fit <= 3) {
+        verdict = 'wrong product';
+        reasoning = "strategic fit is the lowest number here, and no amount of reach or impact fixes that. this is probably a request for a different product, not a missing piece of this one.";
+        rail = '#f87171';
+      } else if (effort >= 8 && score < 20) {
+        verdict = 'not worth it yet';
+        reasoning = "the cost is the problem. effort is high and the upside doesn't clear the bar yet. worth revisiting if effort drops or confidence goes up, not worth forcing now.";
+        rail = '#fbbf24';
+      } else if (confidence <= 3) {
+        verdict = 'validate before building';
+        reasoning = "confidence is the weak link. the reach and impact numbers might be right, but you don't actually know that yet. spend a week de risking the guess before committing engineering time.";
+        rail = '#6366f1';
+      } else if (score >= 30 && fit >= 6) {
+        verdict = 'build it now';
+        reasoning = "reach, impact, and confidence are all solid, effort is manageable, and it fits where the product is going. nothing here is dragging the call down.";
+        rail = '#34d399';
+      } else if (score >= 15) {
+        verdict = 'worth a small bet';
+        reasoning = "this clears the bar but not by a lot. " + weakest[0] + " is the softest input. a scoped down version is the right size bet, not a full build.";
+        rail = '#6366f1';
+      } else {
+        verdict = 'pass for now';
+        reasoning = weakest[0] + " is too low to justify the effort right now. say no clearly and explain why, rather than letting it sit in the backlog unanswered.";
+        rail = '#5e5e6e';
+      }
+
+      document.getElementById('rubric-verdict').textContent = verdict;
+      document.getElementById('rubric-reasoning').textContent = reasoning;
+      const railEl = document.getElementById('verdict-rail');
+      railEl.style.background = rail;
+
+      if (verdict !== lastVerdict) {
+        const block = document.getElementById('verdict-block');
+        block.style.transform = 'translateX(4px)';
+        setTimeout(() => { block.style.transform = 'translateX(0)'; }, 180);
+        railEl.classList.remove('rail-hit');
+        requestAnimationFrame(() => railEl.classList.add('rail-hit'));
+        lastVerdict = verdict;
+      }
+    }
+
+    function openRubric() {
+      document.getElementById('d-tag').textContent = 'the rubric';
+      document.getElementById('d-tag').style.background = 'var(--c-accent-bg)';
+      document.getElementById('d-tag').style.color = 'var(--c-accent-text)';
+      document.getElementById('d-title').textContent = "how I'd score a feature request";
+      document.getElementById('panel-meta').textContent = 'a live tool';
+
+      const rowsHtml = rubricFields.map(f => {
+        const color = colorForValue(f.value);
+        return `
+        <div class="rubric-row">
+          <div class="row-top">
+            <label>${f.label}</label>
+            <span class="rubric-pip" id="${f.id}-out" style="color:${color};">${f.value}</span>
+          </div>
+          <input type="range" min="1" max="10" step="1" value="${f.value}" id="${f.id}" style="background:${sliderBackground(f.value, color)};" />
+        </div>`;
+      }).join('');
+
+      panelBody.innerHTML = `
+        ${rowsHtml}
+        <div id="verdict-block">
+          <div id="verdict-rail"></div>
+          <div style="flex:1;">
+            <p class="s-heading">verdict</p>
+            <p id="rubric-verdict"></p>
+            <p id="rubric-reasoning"></p>
+          </div>
+        </div>
+      `;
+      panelBody.classList.remove('snap');
+      panelBody.scrollTop = 0;
+      document.getElementById('d-progress').style.width = '100%';
+
+      rubricFields.forEach(f => {
+        const input = document.getElementById(f.id);
+        const pip = document.getElementById(f.id + '-out');
+        input.addEventListener('input', (e) => {
+          const v = Number(e.target.value);
+          rubricVals[f.id] = v;
+          const color = colorForValue(v);
+          pip.textContent = v;
+          pip.style.color = color;
+          input.style.background = sliderBackground(v, color);
+          pip.classList.remove('pip-hit');
+          requestAnimationFrame(() => pip.classList.add('pip-hit'));
+          updateRubric();
+        });
+      });
+
+      lastVerdict = null;
+      updateRubric();
+
+      overlay.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      document.body.classList.add('reading-mode');
     }
 
     document.getElementById('back-btn').addEventListener('click', closeCase);
