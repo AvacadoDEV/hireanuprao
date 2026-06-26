@@ -170,6 +170,58 @@
     footer a { color: var(--text-muted); text-decoration: none; }
     footer a:hover { color: var(--text); }
 
+    /* ── INTRO CARD ── */
+    #introOverlay {
+      position: fixed; inset: 0;
+      background: rgba(5,5,8,0.6);
+      display: none;
+      align-items: center; justify-content: center;
+      z-index: 200;
+      padding: 5vh 24px;
+    }
+    #introOverlay.open { display: flex; }
+    #introPanel {
+      width: 100%;
+      max-width: 620px;
+      max-height: 86vh;
+      overflow-y: auto;
+      background: rgba(24,24,31,0.65);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 18px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+      backdrop-filter: blur(22px) saturate(140%);
+      -webkit-backdrop-filter: blur(22px) saturate(140%);
+      padding: 40px 44px 36px;
+      position: relative;
+    }
+    #introPanel::-webkit-scrollbar { width: 7px; }
+    #introPanel::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+    #introPanel::-webkit-scrollbar-track { background: transparent; }
+    #intro-close {
+      position: absolute; top: 18px; right: 18px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+    #intro-close:hover { color: var(--text); border-color: var(--border-strong); }
+    #introPanel .kicker { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); text-transform: lowercase; margin-bottom: 10px; }
+    #introPanel h2 { font-family: var(--font-serif); font-size: 24px; font-weight: 600; margin-bottom: 20px; line-height: 1.3; padding-right: 20px; }
+    #introPanel p { font-size: 15px; line-height: 1.75; color: var(--text); margin-bottom: 16px; }
+    #introPanel p:last-of-type { margin-bottom: 24px; }
+    #intro-cta {
+      font-family: var(--font-mono); font-size: 13px;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: 8px;
+      padding: 10px 18px;
+      display: inline-flex; align-items: center; gap: 6px;
+      cursor: pointer;
+    }
+    #intro-cta:hover { opacity: 0.9; }
+
     /* ── DETAIL OVERLAY ── */
     #overlay {
       position: fixed; inset: 0;
@@ -227,6 +279,24 @@
 <body class="has-cursor">
 
   <div id="cursor"></div>
+
+  <div id="introOverlay">
+    <div id="introPanel">
+      <button id="intro-close" aria-label="close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <p class="kicker">god is in the details</p>
+      <h2>why the small stuff is the whole pitch</h2>
+      <p>Nobody hires a PM to care about how a cursor looks when you hover a card. That's not on any job description I've ever seen. But it's the kind of thing I can't leave alone.</p>
+      <p>I spent real time on this exact site arguing with myself over a circle that's 18 pixels instead of 12, whether it should grow on hover or just change color, and whether opening a panel should feel like reading or like adjusting a dial. Not because anyone asked. Because if the small thing is wrong, I don't trust myself on the big thing next to it.</p>
+      <p>That's the part of the job that doesn't show up in a roadmap review. Nobody puts "cursor felt orienting" on a PRD. But it's the same muscle as catching that an error message says "something went wrong" instead of telling someone what actually broke, or noticing that a metric everyone's celebrating doesn't match what users are actually doing. The skill isn't having good taste. It's being unable to stop noticing when something's slightly off, and caring enough to go fix it even when nobody would've caught it.</p>
+      <p>I've worked across ad systems, internal platform tools, and customer-facing flows, in roles that ranged from writing the code to owning the roadmap. The thread through all of it isn't a specific skill. It's that I'd rather be the person who catches the bad call before it ships, even when that person is me, than the one who defends a decision because reversing it feels harder than living with it.</p>
+      <p>That's not a flashy pitch. But it's the honest one.</p>
+      <button id="intro-cta">show me the receipts
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
 
   <nav>
     <div class="container">
@@ -286,6 +356,30 @@
       pro: ['var(--c-pro-bg)', 'var(--c-pro-text)'],
       teal: ['var(--c-teal-bg)', 'var(--c-teal-text)']
     };
+
+    // ── INTRO CARD ──
+    const introOverlay = document.getElementById('introOverlay');
+    function closeIntroCard() {
+      introOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function goToCases() {
+      closeIntroCard();
+      document.getElementById('grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    document.getElementById('intro-close').addEventListener('click', closeIntroCard);
+    document.getElementById('intro-cta').addEventListener('click', goToCases);
+    introOverlay.addEventListener('click', (e) => {
+      if (e.target === introOverlay) closeIntroCard();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && introOverlay.classList.contains('open')) closeIntroCard();
+    });
+    if (!localStorage.getItem('introCardSeen')) {
+      introOverlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      localStorage.setItem('introCardSeen', '1');
+    }
 
     const grid = document.getElementById('grid');
     caseStudies.forEach((c, i) => {
