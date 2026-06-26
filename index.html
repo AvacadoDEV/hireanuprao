@@ -82,6 +82,7 @@
     }
     #cursor.hover { width: 52px; height: 52px; background: var(--c-accent-bg); }
     #cursor.reading { width: 2px; height: 22px; border-radius: 2px; border: none; background: var(--c-accent-text); opacity: .8; }
+    #cursor.value-ring { width: 40px; height: 40px; background: rgba(99,102,241,0.1); font-size: 13px; }
     #cursor.hidden { opacity: 0; }
 
     /* ── NAV ── */
@@ -333,6 +334,7 @@
       document.getElementById('d-tag').style.background = bg;
       document.getElementById('d-tag').style.color = fg;
       document.getElementById('d-title').textContent = c.title;
+      panelType = 'case';
       document.getElementById('panel-meta').textContent = `0${i + 1} / 0${caseStudies.length} · ${c.domain}`;
       panelBody.innerHTML = c.sections.map(s => `
         <div class="section-block">
@@ -347,6 +349,8 @@
       document.body.style.overflow = 'hidden';
       document.body.classList.add('reading-mode');
     }
+
+    let panelType = 'case';
 
     function closeCase() {
       overlay.style.display = 'none';
@@ -419,6 +423,7 @@
     }
 
     function openRubric() {
+      panelType = 'rubric';
       document.getElementById('d-tag').textContent = 'the rubric';
       document.getElementById('d-tag').style.background = 'var(--c-accent-bg)';
       document.getElementById('d-tag').style.color = 'var(--c-accent-text)';
@@ -455,6 +460,7 @@
       rubricFields.forEach(f => {
         const input = document.getElementById(f.id);
         const pip = document.getElementById(f.id + '-out');
+        const row = input.closest('.rubric-row');
         input.addEventListener('input', (e) => {
           const v = Number(e.target.value);
           rubricVals[f.id] = v;
@@ -464,7 +470,16 @@
           input.style.background = sliderBackground(v, color);
           pip.classList.remove('pip-hit');
           requestAnimationFrame(() => pip.classList.add('pip-hit'));
+          if (cursor.classList.contains('value-ring')) cursor.textContent = v;
           updateRubric();
+        });
+        row.addEventListener('mouseenter', () => {
+          cursor.classList.add('value-ring');
+          cursor.textContent = rubricVals[f.id];
+        });
+        row.addEventListener('mouseleave', () => {
+          cursor.classList.remove('value-ring');
+          cursor.textContent = '';
         });
       });
 
@@ -514,11 +529,15 @@
           cursor.textContent = '';
         });
       });
-      panelBody.addEventListener('mouseenter', () => cursor.classList.add('reading'));
+      panelBody.addEventListener('mouseenter', () => { if (panelType === 'case') cursor.classList.add('reading'); });
       panelBody.addEventListener('mouseleave', () => { if (overlay.style.display === 'flex') cursor.classList.remove('reading'); });
       document.getElementById('panel-header').addEventListener('mouseenter', () => cursor.classList.remove('reading'));
       const observer = new MutationObserver(() => {
-        if (overlay.style.display !== 'flex') cursor.classList.remove('reading');
+        if (overlay.style.display !== 'flex') {
+          cursor.classList.remove('reading');
+          cursor.classList.remove('value-ring');
+          cursor.textContent = '';
+        }
       });
       observer.observe(overlay, { attributes: true, attributeFilter: ['style'] });
     }
