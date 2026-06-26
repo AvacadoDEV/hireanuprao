@@ -286,12 +286,12 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
       <p class="kicker">god is in the details</p>
-      <h2>why the small stuff is the whole pitch</h2>
-      <p>Nobody hires a PM to care about how a cursor looks when you hover a card. That's not on any job description I've ever seen. But it's the kind of thing I can't leave alone.</p>
-      <p>I spent real time on this exact site arguing with myself over a circle that's 18 pixels instead of 12, whether it should grow on hover or just change color, and whether opening a panel should feel like reading or like adjusting a dial. Not because anyone asked. Because if the small thing is wrong, I don't trust myself on the big thing next to it.</p>
-      <p>That's the part of the job that doesn't show up in a roadmap review. Nobody puts "cursor felt orienting" on a PRD. But it's the same muscle as catching that an error message says "something went wrong" instead of telling someone what actually broke, or noticing that a metric everyone's celebrating doesn't match what users are actually doing. The skill isn't having good taste. It's being unable to stop noticing when something's slightly off, and caring enough to go fix it even when nobody would've caught it.</p>
-      <p>I've worked across ad systems, internal platform tools, and customer-facing flows, in roles that ranged from writing the code to owning the roadmap. The thread through all of it isn't a specific skill. It's that I'd rather be the person who catches the bad call before it ships, even when that person is me, than the one who defends a decision because reversing it feels harder than living with it.</p>
-      <p>That's not a flashy pitch. But it's the honest one.</p>
+      <h2>the small stuff is how a product earns trust</h2>
+      <p>Nobody hires a PM to care about how a cursor looks when you hover a card. That's not on any job description I've ever seen. But it's the kind of thing I genuinely enjoy getting right.</p>
+      <p>I spent real time on this exact site working through a circle that's 18 pixels instead of 12, whether it should grow on hover or just change color, and whether opening a panel should feel like reading or like adjusting a dial. Not because anyone asked. Because getting that one detail right is what makes the next one easier to get right too, and a few hundred of those decisions later, the whole thing feels inevitable instead of assembled.</p>
+      <p>That's the part of the job that doesn't show up in a roadmap review. Nobody puts "cursor felt orienting" on a PRD. But it's the same instinct as writing an error message that tells someone what actually broke instead of "something went wrong," or noticing a metric everyone's celebrating doesn't quite match what users are actually doing. It's not about having good taste. It's about paying attention long enough that the small things stack into something that feels finished, not just shipped.</p>
+      <p>I've worked across ad systems, internal platform tools, and customer-facing flows, in roles that ranged from writing the code to owning the roadmap. The thread through all of it is the same one: the products I'm proudest of got there because somebody kept sweating the parts nobody would've noticed if they'd been wrong.</p>
+      <p>That's the actual pitch. Not a big swing, just a lot of small ones that all land.</p>
       <button id="intro-cta">show me the receipts
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
       </button>
@@ -302,6 +302,7 @@
     <div class="container">
       <div class="brand">anup rao</div>
       <div class="nav-links">
+        <a href="#" id="howIThinkLink">how I think</a>
         <a href="https://anuprao.dev" target="_blank" rel="noopener" class="nav-link-external">the long version
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M7 17L17 7M7 7h10v10"/></svg>
         </a>
@@ -369,6 +370,11 @@
     }
     document.getElementById('intro-close').addEventListener('click', closeIntroCard);
     document.getElementById('intro-cta').addEventListener('click', goToCases);
+    document.getElementById('howIThinkLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      introOverlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
     introOverlay.addEventListener('click', (e) => {
       if (e.target === introOverlay) closeIntroCard();
     });
