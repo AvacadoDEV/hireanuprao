@@ -88,5 +88,19 @@ const caseStudies = [
       { heading: "what I'd push back on", body: "Bolting wellbeing guardrails onto an engagement first system after the fact is the cheaper path, but it puts the product in the position of fighting its own algorithm instead of building one that doesn't need fighting. I'd push for weighting something closer to \"are you actually glad you watched this session,\" even an imperfect version like an occasional one tap prompt at the end of a session, directly into the ranking itself instead of treating wellbeing as a separate feature bolted on the side. That's harder to measure and harder to defend internally, and it probably costs some short term watch time. But it's the difference between a product that's good for people as a side effect of policy, and one that's good for people by design." },
       { heading: "the short version", body: "When the cheapest signal to measure, watch time, isn't the signal you actually care about, user wellbeing, adding guardrails on top is a patch, not a fix. The real work is getting the harder, truer signal into the algorithm itself." }
     ]
+  },
+  {
+    slug: "atlas-nova-instalily-demo",
+    tag: "live demo",
+    color: "accent",
+    domain: "AI teammates / B2B onboarding",
+    title: "Atlas: an onboarding teammate, built for InstaLILY",
+    hook: "a working AI teammate that onboards a user step by step — built to show the kind of engagement loop InstaLILY's PM role is actually about.",
+    hasDemoIframe: true,
+    demoSrc: "demos/atlas-nova-onboarding.html",
+    sections: [
+      { heading: "the demo", body: "Atlas is a fictional B2B SaaS product. Nova is the AI teammate that onboards a new user into it, conversationally, one step at a time, instead of dropping a checklist on them and walking away. While you talk to Nova, a side panel tracks the same things a PM would actually want to see: percent of setup complete, time to first value, how many exchanges it took, and which of the four setup steps are done. Finish all four and the loop resets, the same shape as a habit loop in a real product, not just a one time onboarding flow." },
+      { heading: "the why", body: "InstaLILY builds AI teammates for B2B workflows, and the open PM role is explicitly split across two things: the platform layer that makes the product scale, and the engagement layer that gets users to actually form a habit with it. I didn't want to just say I understood that split in a cover letter. I wanted to hand over something built to that exact brief.\n\nAtlas is small on purpose. Four steps, one conversation, one side panel. But every piece maps to something in the job description: the steps map to onboarding speed, the signals panel maps to surfacing usage data engineering and product can actually act on, and the loop counter maps to habit formation, not just a single completed setup that nobody returns to. If the role is about operating at both the platform layer and the engagement layer, this is what that looks like as one small, working thing instead of two bullet points." }
+    ]
   }
 ];

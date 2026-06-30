@@ -142,10 +142,11 @@
     .case-5 { grid-column: 4 / 7; grid-row: span 1; }
     .case-6 { grid-column: 1 / 7; grid-row: span 1; }
     .case-7 { grid-column: 1 / 7; grid-row: span 1; }
+    .case-8 { grid-column: 1 / 7; grid-row: span 1; }
 
     @media (max-width: 760px) {
       .grid { grid-template-columns: 1fr; }
-      .case-1, .case-2, .case-3, .case-4, .case-5, .case-6, .case-7 { grid-column: 1; grid-row: auto; }
+      .case-1, .case-2, .case-3, .case-4, .case-5, .case-6, .case-7, .case-8 { grid-column: 1; grid-row: auto; }
       .hero h1 { font-size: 30px; }
     }
 
@@ -274,6 +275,34 @@
     .section-block .s-heading { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); margin-bottom: 6px; text-transform: lowercase; }
     .section-block .s-body { font-size: 15.5px; line-height: 1.75; color: var(--text); white-space: pre-line; }
     #panel-body.snap { scroll-snap-type: y proximity; }
+
+    /* ── DEMO IFRAME SECTION ── */
+    .demo-iframe-block { scroll-snap-align: start; margin-top: 8px; }
+    .demo-iframe-block .s-heading { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); margin-bottom: 14px; text-transform: lowercase; }
+    .demo-iframe-wrap {
+      width: 72%;
+      margin: 0 auto;
+      height: 380px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border-strong);
+      transition: width 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  height 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  border-radius 0.7s ease;
+    }
+    .demo-iframe-wrap.expanded {
+      width: 100%;
+      height: 560px;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+    }
+    .demo-iframe-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
   </style>
 </head>
 <body class="has-cursor">
@@ -306,7 +335,7 @@
         <a href="https://anuprao.dev" target="_blank" rel="noopener" class="nav-link-external">the long version
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M7 17L17 7M7 7h10v10"/></svg>
         </a>
-        <a href="mailto:testemailfordev1537@gmail.com">contact</a>
+        <a href="#" id="contactLink" data-default="contact">contact</a>
         <a href="https://www.linkedin.com" target="_blank" rel="noopener">linkedin</a>
       </div>
     </div>
@@ -325,7 +354,7 @@
   <footer>
     <div class="container">
       <span>reads better than a resume</span>
-      <a href="mailto:testemailfordev1537@gmail.com">say hello</a>
+      <a href="#" id="footerContactLink" data-default="say hello">say hello</a>
     </div>
   </footer>
 
@@ -375,6 +404,21 @@
       introOverlay.classList.add('open');
       document.body.style.overflow = 'hidden';
     });
+
+    const contactEmail = 'Raonoops@gmail.com';
+    function wireCopyEmail(id) {
+      const link = document.getElementById(id);
+      if (!link) return;
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        navigator.clipboard.writeText(contactEmail).then(() => {
+          link.textContent = 'copied';
+          setTimeout(() => { link.textContent = link.dataset.default; }, 1500);
+        });
+      });
+    }
+    wireCopyEmail('contactLink');
+    wireCopyEmail('footerContactLink');
     introOverlay.addEventListener('click', (e) => {
       if (e.target === introOverlay) closeIntroCard();
     });
@@ -410,11 +454,11 @@
     });
 
     const rubricCard = document.createElement('div');
-    rubricCard.className = 'case-card case-7';
+    rubricCard.className = 'case-card case-8';
     rubricCard.innerHTML = `
       <div>
         <div class="top-row">
-          <span class="idx">07</span>
+          <span class="idx">08</span>
           <span class="tag" style="background:var(--c-accent-bg);color:var(--c-accent-text);">the rubric</span>
         </div>
         <h3>how I score a feature request</h3>
@@ -440,15 +484,41 @@
       document.getElementById('d-title').textContent = c.title;
       panelType = 'case';
       document.getElementById('panel-meta').textContent = `0${i + 1} / 0${caseStudies.length} · ${c.domain}`;
-      panelBody.innerHTML = c.sections.map(s => `
+
+      const textSections = c.sections.map(s => `
         <div class="section-block">
           <p class="s-heading">${s.heading}</p>
           <p class="s-body">${s.body}</p>
         </div>
       `).join('');
+
+      const iframeSection = c.hasDemoIframe ? `
+        <div class="demo-iframe-block">
+          <p class="s-heading">try it live</p>
+          <div class="demo-iframe-wrap" id="demoIframeWrap">
+            <iframe src="${c.demoSrc}" title="Atlas Nova onboarding demo" allow="clipboard-write"></iframe>
+          </div>
+        </div>
+      ` : '';
+
+      panelBody.innerHTML = textSections + iframeSection;
       panelBody.classList.add('snap');
       panelBody.scrollTop = 0;
       document.getElementById('d-progress').style.width = '6%';
+
+      if (c.hasDemoIframe) {
+        const wrap = document.getElementById('demoIframeWrap');
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.intersectionRatio >= 0.3) {
+              wrap.classList.add('expanded');
+              observer.disconnect();
+            }
+          });
+        }, { root: panelBody, threshold: 0.3 });
+        setTimeout(() => { if (wrap) observer.observe(wrap); }, 100);
+      }
+
       overlay.style.display = 'flex';
       document.body.style.overflow = 'hidden';
       document.body.classList.add('reading-mode');
