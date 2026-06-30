@@ -346,7 +346,7 @@
     #demoFullscreen {
       position: fixed;
       inset: 0;
-      z-index: 9999;
+      z-index: 10001;
       background: #0a0a0f;
       display: none;
       flex-direction: column;
@@ -803,15 +803,54 @@
       });
       observer.observe(overlay, { attributes: true, attributeFilter: ['style'] });
     }
+
+    /* ── URL DEEP LINKING ── */
+    function slugToUrl(slug) { return '/' + slug; }
+
+    function openCaseBySlug(slug) {
+      if (slug === 'rubric') { openRubric(); return; }
+      const i = caseStudies.findIndex(c => c.slug === slug);
+      if (i !== -1) openCase(i);
+    }
+
+    const originalOpenCase = openCase;
+    const originalOpenRubric = openRubric;
+    const originalCloseCase = closeCase;
+
+    openCase = function(i) {
+      originalOpenCase(i);
+      history.pushState({ slug: caseStudies[i].slug }, '', slugToUrl(caseStudies[i].slug));
+    };
+    openRubric = function() {
+      originalOpenRubric();
+      history.pushState({ slug: 'rubric' }, '', '/rubric');
+    };
+    closeCase = function() {
+      originalCloseCase();
+      history.pushState({}, '', '/');
+    };
+
+    window.addEventListener('popstate', (e) => {
+      const slug = e.state && e.state.slug;
+      if (slug) {
+        openCaseBySlug(slug);
+      } else {
+        originalCloseCase();
+      }
+    });
+
+    const initSlug = location.pathname.replace(/^\//, '').replace(/\/$/, '');
+    if (initSlug) openCaseBySlug(initSlug);
+
   </script>
+
+  <div id="demoFullscreen">
+    <button id="demoCloseBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      exit demo
+    </button>
+    <iframe id="demoFrame" src="" title="Atlas Nova onboarding demo" allow="clipboard-write"></iframe>
+  </div>
+
 </body>
-
-<div id="demoFullscreen">
-  <button id="demoCloseBtn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg>
-    exit demo
-  </button>
-  <iframe id="demoFrame" src="" title="Atlas Nova onboarding demo" allow="clipboard-write"></iframe>
-</div>
-
 </html>
