@@ -276,33 +276,107 @@
     .section-block .s-body { font-size: 15.5px; line-height: 1.75; color: var(--text); white-space: pre-line; }
     #panel-body.snap { scroll-snap-type: y proximity; }
 
-    /* ── DEMO IFRAME SECTION ── */
-    .demo-iframe-block { scroll-snap-align: start; margin-top: 8px; }
-    .demo-iframe-block .s-heading { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); margin-bottom: 14px; text-transform: lowercase; }
-    .demo-iframe-wrap {
-      width: 72%;
-      margin: 0 auto;
-      height: 380px;
+    /* ── DEMO PREVIEW CARD ── */
+    .demo-preview-block { scroll-snap-align: start; margin-top: 8px; }
+    .demo-preview-block .s-heading { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); margin-bottom: 16px; text-transform: lowercase; }
+    .demo-preview-card {
+      position: relative;
+      width: 100%;
+      height: 240px;
+      background: #1B1D29;
       border-radius: 14px;
+      border: 1px solid rgba(94, 234, 212, 0.18);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      cursor: none;
       overflow: hidden;
-      border: 1px solid var(--border-strong);
-      transition: width 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                  height 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                  border-radius 0.7s ease;
+      transition: border-color 0.2s ease;
     }
-    .demo-iframe-wrap.expanded {
-      width: 100%;
-      height: 560px;
-      border-radius: 0;
-      border-left: none;
-      border-right: none;
+    .demo-preview-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(94,234,212,0.06) 0%, transparent 70%);
+      pointer-events: none;
     }
-    .demo-iframe-wrap iframe {
+    .demo-preview-card:hover { border-color: rgba(94, 234, 212, 0.45); }
+    .demo-preview-wordmark {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      color: rgba(94, 234, 212, 0.7);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .demo-preview-wordmark .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #5EEAD4;
+      box-shadow: 0 0 8px #5EEAD4;
+    }
+    .demo-play-btn {
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(94, 234, 212, 0.6);
+      background: rgba(94, 234, 212, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+    .demo-preview-card:hover .demo-play-btn {
+      transform: scale(1.1);
+      background: rgba(94, 234, 212, 0.16);
+      border-color: #5EEAD4;
+    }
+    .demo-play-btn svg { margin-left: 3px; }
+    .demo-preview-hint {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: rgba(154, 156, 176, 0.7);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── DEMO FULLSCREEN OVERLAY ── */
+    #demoFullscreen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #0a0a0f;
+      display: none;
+      flex-direction: column;
+    }
+    #demoFullscreen.open { display: flex; }
+    #demoFullscreen iframe {
+      flex: 1;
       width: 100%;
-      height: 100%;
       border: none;
       display: block;
     }
+    #demoCloseBtn {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      z-index: 10000;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 8px;
+      color: #e8e8f0;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      padding: 7px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease;
+    }
+    #demoCloseBtn:hover { background: rgba(255,255,255,0.16); }
   </style>
 </head>
 <body class="has-cursor">
@@ -492,31 +566,31 @@
         </div>
       `).join('');
 
-      const iframeSection = c.hasDemoIframe ? `
-        <div class="demo-iframe-block">
+      const previewSection = c.hasDemoIframe ? `
+        <div class="demo-preview-block">
           <p class="s-heading">try it live</p>
-          <div class="demo-iframe-wrap" id="demoIframeWrap">
-            <iframe src="${c.demoSrc}" title="Atlas Nova onboarding demo" allow="clipboard-write"></iframe>
+          <div class="demo-preview-card" id="demoPreviewCard">
+            <div class="demo-preview-wordmark"><span class="dot"></span>ATLAS &nbsp;·&nbsp; NOVA ONBOARDING</div>
+            <div class="demo-play-btn">
+              <svg viewBox="0 0 24 24" fill="#5EEAD4" width="22" height="22"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <div class="demo-preview-hint">talk to Nova · watch the signals react</div>
           </div>
         </div>
       ` : '';
 
-      panelBody.innerHTML = textSections + iframeSection;
+      panelBody.innerHTML = textSections + previewSection;
       panelBody.classList.add('snap');
       panelBody.scrollTop = 0;
       document.getElementById('d-progress').style.width = '6%';
 
       if (c.hasDemoIframe) {
-        const wrap = document.getElementById('demoIframeWrap');
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.intersectionRatio >= 0.3) {
-              wrap.classList.add('expanded');
-              observer.disconnect();
-            }
-          });
-        }, { root: panelBody, threshold: 0.3 });
-        setTimeout(() => { if (wrap) observer.observe(wrap); }, 100);
+        document.getElementById('demoPreviewCard').addEventListener('click', () => {
+          document.getElementById('demoFrame').src = c.demoSrc;
+          document.getElementById('demoFullscreen').classList.add('open');
+          document.body.style.overflow = 'hidden';
+          if (cursor) cursor.style.opacity = '0';
+        });
       }
 
       overlay.style.display = 'flex';
@@ -531,6 +605,20 @@
       document.body.style.overflow = '';
       document.body.classList.remove('reading-mode');
     }
+
+    function closeDemoFullscreen() {
+      const fs = document.getElementById('demoFullscreen');
+      fs.classList.remove('open');
+      document.getElementById('demoFrame').src = '';
+      if (cursor) cursor.style.opacity = '1';
+    }
+
+    document.getElementById('demoCloseBtn').addEventListener('click', closeDemoFullscreen);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.getElementById('demoFullscreen').classList.contains('open')) {
+        closeDemoFullscreen();
+      }
+    });
 
     const rubricFields = [
       { id: 'reach', label: 'reach', value: 6 },
@@ -717,4 +805,13 @@
     }
   </script>
 </body>
+
+<div id="demoFullscreen">
+  <button id="demoCloseBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    exit demo
+  </button>
+  <iframe id="demoFrame" src="" title="Atlas Nova onboarding demo" allow="clipboard-write"></iframe>
+</div>
+
 </html>
