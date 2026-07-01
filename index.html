@@ -775,11 +775,6 @@
     });
 
     // 2. Escape Key Handler
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && overlay.style.display === 'flex') {
-        closeCase();
-      }
-    });
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && overlay.style.display === 'flex') closeCase();
