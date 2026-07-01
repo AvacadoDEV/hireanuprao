@@ -57,6 +57,46 @@
 
     .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
 
+    /* ── MAGNETIC PILL CURSOR ── */
+    #magCursor {
+      position: fixed;
+      top: 0; left: 0;
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: rgba(179, 182, 255, 0.9);
+      pointer-events: none;
+      z-index: 10002;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0;
+      color: transparent;
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+      box-shadow: 0 0 24px rgba(99, 102, 241, 0.5);
+      transition: width 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  height 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  background 0.2s ease,
+                  padding 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  font-size 0.2s ease,
+                  color 0.2s ease,
+                  opacity 0.2s ease,
+                  box-shadow 0.3s ease;
+    }
+    #magCursor.active {
+      width: auto;
+      height: 34px;
+      padding: 0 18px;
+      font-size: 12px;
+      color: #0a0a0f;
+      background: rgba(179, 182, 255, 1);
+      box-shadow: 0 0 36px rgba(99, 102, 241, 0.75);
+    }
+    #magCursor.hidden { opacity: 0; }
+    @media (pointer: coarse) { #magCursor { display: none; } }
+
     /* ── NAV ── */
     nav {
       position: sticky; top: 0; z-index: 30;
@@ -565,6 +605,7 @@
       overlay.style.display = 'flex';
       document.body.style.overflow = 'hidden';
       document.body.classList.add('reading-mode');
+      setHash(c.slug);
     }
 
     let panelType = 'case';
@@ -573,6 +614,7 @@
       overlay.style.display = 'none';
       document.body.style.overflow = '';
       document.body.classList.remove('reading-mode');
+      setHash('');
     }
 
     function closeDemoFullscreen() {
@@ -710,6 +752,7 @@
       overlay.style.display = 'flex';
       document.body.style.overflow = 'hidden';
       document.body.classList.add('reading-mode');
+      setHash('rubric');
     }
 
     document.getElementById('back-btn').addEventListener('click', closeCase);
@@ -729,43 +772,78 @@
     });
 
 
-    /* ── URL DEEP LINKING ── */
-    function slugToUrl(slug) { return '/' + slug; }
+    /* ── URL HASH ROUTING ── */
+    let suppressHashChange = false;
+    function setHash(slug) {
+      suppressHashChange = true;
+      if (slug) {
+        location.hash = '#/' + slug;
+      } else {
+        history.replaceState(null, '', location.pathname + location.search);
+      }
+      setTimeout(() => { suppressHashChange = false; }, 50);
+    }
 
-    function openCaseBySlug(slug) {
-      if (slug === 'rubric') { openRubric(); return; }
-      const i = caseStudies.findIndex(c => c.slug === slug);
+    function openFromHash() {
+      const raw = location.hash.replace(/^#\/?/, '').replace(/\/$/, '');
+      if (!raw) return;
+      if (raw === 'rubric') { openRubric(); return; }
+      const i = caseStudies.findIndex(c => c.slug === raw);
       if (i !== -1) openCase(i);
     }
 
-    const originalOpenCase = openCase;
-    const originalOpenRubric = openRubric;
-    const originalCloseCase = closeCase;
-
-    openCase = function(i) {
-      originalOpenCase(i);
-      history.pushState({ slug: caseStudies[i].slug }, '', slugToUrl(caseStudies[i].slug));
-    };
-    openRubric = function() {
-      originalOpenRubric();
-      history.pushState({ slug: 'rubric' }, '', '/rubric');
-    };
-    closeCase = function() {
-      originalCloseCase();
-      history.pushState({}, '', '/');
-    };
-
-    window.addEventListener('popstate', (e) => {
-      const slug = e.state && e.state.slug;
-      if (slug) {
-        openCaseBySlug(slug);
+    window.addEventListener('hashchange', () => {
+      if (suppressHashChange) return;
+      if (!location.hash) {
+        closeCase();
       } else {
-        originalCloseCase();
+        openFromHash();
       }
     });
 
-    const initSlug = location.pathname.replace(/^\//, '').replace(/\/$/, '');
-    if (initSlug) openCaseBySlug(initSlug);
+    if (location.hash) openFromHash();
+
+    /* ── MAGNETIC PILL CURSOR ── */
+    const magCursor = document.createElement('div');
+    magCursor.id = 'magCursor';
+    document.body.appendChild(magCursor);
+
+    let magX = 0, magY = 0, curX = 0, curY = 0;
+    document.addEventListener('mousemove', (e) => {
+      magX = e.clientX;
+      magY = e.clientY;
+    });
+    function tickCursor() {
+      curX += (magX - curX) * 0.22;
+      curY += (magY - curY) * 0.22;
+      magCursor.style.transform = `translate(${curX}px, ${curY}px) translate(-50%, -50%)`;
+      requestAnimationFrame(tickCursor);
+    }
+    if (!window.matchMedia('(pointer: coarse)').matches) {
+      tickCursor();
+      document.querySelectorAll('.case-card').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          if (overlay.style.display === 'flex') return;
+          magCursor.classList.add('active');
+          magCursor.textContent = 'open →';
+        });
+        card.addEventListener('mouseleave', () => {
+          magCursor.classList.remove('active');
+          magCursor.textContent = '';
+        });
+      });
+      const hideOnOverlay = new MutationObserver(() => {
+        if (overlay.style.display === 'flex' || document.getElementById('demoFullscreen').classList.contains('open')) {
+          magCursor.classList.add('hidden');
+        } else {
+          magCursor.classList.remove('hidden');
+        }
+      });
+      hideOnOverlay.observe(overlay, { attributes: true, attributeFilter: ['style'] });
+      hideOnOverlay.observe(document.getElementById('demoFullscreen'), { attributes: true, attributeFilter: ['class'] });
+    } else {
+      magCursor.style.display = 'none';
+    }
 
   </script>
 
