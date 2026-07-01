@@ -755,10 +755,30 @@
       setHash('rubric');
     }
 
-    document.getElementById('back-btn').addEventListener('click', closeCase);
+    // 3. Back to All Cases Button Handler
+    document.getElementById('back-btn').addEventListener('click', () => {
+      closeCase();
+      const demoFullscreen = document.getElementById('demoFullscreen');
+      if (demoFullscreen && demoFullscreen.classList.contains('open')) {
+        demoFullscreen.classList.remove('open');
+        document.getElementById('demoFrame').src = '';
+      }
+    });
 
+    // 1. Outside Click Handler
     overlay.addEventListener('click', (e) => {
-      if (!panel.contains(e.target)) closeCase();
+      // Check if click is outside panel and not on any modal elements
+      const isDemoOpen = document.getElementById('demoFullscreen').classList.contains('open');
+      if (!panel.contains(e.target) && !isDemoOpen) {
+        closeCase();
+      }
+    });
+
+    // 2. Escape Key Handler
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && overlay.style.display === 'flex') {
+        closeCase();
+      }
     });
 
     document.addEventListener('keydown', (e) => {
