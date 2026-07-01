@@ -361,34 +361,65 @@
       z-index: 10001;
       background: #0a0a0f;
       display: none;
-      flex-direction: column;
     }
-    #demoFullscreen.open { display: flex; }
+    #demoFullscreen.open { display: block; }
     #demoFullscreen iframe {
-      flex: 1;
+      position: absolute;
+      top: 56px;
+      left: 0;
+      right: 0;
+      bottom: 0;
       width: 100%;
+      height: calc(100% - 56px);
       border: none;
       display: block;
     }
-    #demoCloseBtn {
+    #demoTopBar {
       position: absolute;
-      top: 14px;
-      right: 18px;
-      z-index: 10000;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.16);
-      border-radius: 8px;
-      color: #e8e8f0;
-      font-family: var(--font-sans);
-      font-size: 13px;
-      padding: 7px 14px;
-      cursor: pointer;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      background: #0a0a0f;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
       display: flex;
       align-items: center;
-      gap: 6px;
-      transition: background 0.15s ease;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 10003;
     }
-    #demoCloseBtn:hover { background: rgba(255,255,255,0.16); }
+    #demoTopBar .label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(94, 234, 212, 0.85);
+    }
+    #demoTopBar .label .dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #5EEAD4;
+      box-shadow: 0 0 8px #5EEAD4;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    #demoCloseBtn {
+      background: #b3b6ff;
+      border: none;
+      border-radius: 999px;
+      color: #0a0a0f;
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: 13px;
+      padding: 9px 18px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+    }
+    #demoCloseBtn:hover { background: #ffffff; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5); }
+    #demoCloseBtn:active { transform: translateY(0); }
   </style>
 </head>
 <body>
@@ -460,7 +491,18 @@
     </div>
   </div>
 
-  <script src="case-studies.js?v=2"></script>
+  <div id="demoFullscreen">
+    <div id="demoTopBar">
+      <span class="label"><span class="dot"></span>ATLAS · Nova onboarding demo</span>
+      <button id="demoCloseBtn" type="button" aria-label="exit demo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        exit demo
+      </button>
+    </div>
+    <iframe id="demoFrame" src="" title="Atlas Nova onboarding demo" allow="clipboard-write"></iframe>
+  </div>
+
+  <script src="case-studies.js?v=3"></script>
   <script>
     const colorMap = {
       accent: ['var(--c-accent-bg)', 'var(--c-accent-text)'],
@@ -803,36 +845,48 @@
     });
 
 
-    /* ── URL HASH ROUTING ── */
-    let suppressHashChange = false;
+    /* ── URL PATH ROUTING (HTML5 pushState) ── */
+    let isRoutingBack = false;
+
     function setHash(slug) {
-      suppressHashChange = true;
-      if (slug) {
-        location.hash = '#/' + slug;
-      } else {
-        history.replaceState(null, '', location.pathname + location.search);
-      }
-      setTimeout(() => { suppressHashChange = false; }, 50);
+      if (isRoutingBack) return;
+      const target = slug ? '/' + slug : '/';
+      if (location.pathname === target) return;
+      history.pushState({ slug: slug || null }, '', target);
     }
 
-    function openFromHash() {
-      const raw = location.hash.replace(/^#\/?/, '').replace(/\/$/, '');
-      if (!raw) return;
-      if (raw === 'rubric') { openRubric(); return; }
-      const i = caseStudies.findIndex(c => c.slug === raw);
+    function routeToSlug(slug) {
+      if (!slug) { closeCase(); return; }
+      if (slug === 'rubric') { openRubric(); return; }
+      const i = caseStudies.findIndex(c => c.slug === slug);
       if (i !== -1) openCase(i);
+      else closeCase();
     }
 
-    window.addEventListener('hashchange', () => {
-      if (suppressHashChange) return;
-      if (!location.hash) {
-        closeCase();
-      } else {
-        openFromHash();
+    function slugFromLocation() {
+      let path = location.pathname.replace(/^\/+/, '').replace(/\/+$/, '');
+      const ss = sessionStorage.getItem('spa-redirect-path');
+      if (ss) {
+        sessionStorage.removeItem('spa-redirect-path');
+        path = ss.replace(/^\/+/, '').replace(/\/+$/, '');
+        history.replaceState({ slug: path || null }, '', '/' + path);
       }
+      return path;
+    }
+
+    window.addEventListener('popstate', (e) => {
+      isRoutingBack = true;
+      const slug = (e.state && e.state.slug) || slugFromLocation();
+      routeToSlug(slug);
+      isRoutingBack = false;
     });
 
-    if (location.hash) openFromHash();
+    const initialSlug = slugFromLocation();
+    if (initialSlug) {
+      isRoutingBack = true;
+      routeToSlug(initialSlug);
+      isRoutingBack = false;
+    }
 
     /* ── MAGNETIC PILL CURSOR ── */
     const magCursor = document.createElement('div');
@@ -877,14 +931,6 @@
     }
 
   </script>
-
-  <div id="demoFullscreen">
-    <button id="demoCloseBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg>
-      exit demo
-    </button>
-    <iframe id="demoFrame" src="" title="Atlas Nova onboarding demo" allow="clipboard-write"></iframe>
-  </div>
 
 </body>
 </html>

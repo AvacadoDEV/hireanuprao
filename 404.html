@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Redirecting…</title>
+  <script>
+    (function () {
+      var path = window.location.pathname + window.location.search + window.location.hash;
+      if (path && path !== '/') {
+        sessionStorage.setItem('spa-redirect-path', path);
+      }
+      window.location.replace('/');
+    })();
+  </script>
+</head>
+<body>
+  <noscript>
+    This site uses client-side routing. <a href="/">Go to home</a>.
+  </noscript>
+</body>
+</html>
