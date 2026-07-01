@@ -755,30 +755,46 @@
       setHash('rubric');
     }
 
-    // 3. Back to All Cases Button Handler
-    document.getElementById('back-btn').addEventListener('click', () => {
-      closeCase();
-      const demoFullscreen = document.getElementById('demoFullscreen');
-      if (demoFullscreen && demoFullscreen.classList.contains('open')) {
-        demoFullscreen.classList.remove('open');
-        document.getElementById('demoFrame').src = '';
-      }
-    });
+    // 1. Escape Key Handler
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const demoFullscreen = document.getElementById('demoFullscreen');
+            if (demoFullscreen && demoFullscreen.classList.contains('open')) {
+                demoFullscreen.classList.remove('open');
+                const demoFrame = document.getElementById('demoFrame');
+                if (demoFrame) demoFrame.src = '';
+                return;
+            }
+            if (typeof closeCase === 'function') closeCase();
+        }
+    }, true);
 
-    // 1. Outside Click Handler
-    overlay.addEventListener('click', (e) => {
-      // Check if click is outside panel and not on any modal elements
-      const isDemoOpen = document.getElementById('demoFullscreen').classList.contains('open');
-      if (!panel.contains(e.target) && !isDemoOpen) {
-        closeCase();
-      }
-    });
+    // 2. Overlay Click Handler
+    const overlayEl = document.getElementById('overlay');
+    if (overlayEl) {
+        const cleanOverlay = overlayEl.cloneNode(true);
+        overlayEl.parentNode.replaceChild(cleanOverlay, overlayEl);
+        cleanOverlay.addEventListener('click', (e) => {
+            const panel = cleanOverlay.querySelector('.panel') || cleanOverlay.firstElementChild;
+            const demoFullscreen = document.getElementById('demoFullscreen');
+            if (panel && panel.contains(e.target)) return;
+            if (demoFullscreen && demoFullscreen.classList.contains('open')) return;
+            if (typeof closeCase === 'function') closeCase();
+        });
+    }
 
-    // 2. Escape Key Handler
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && overlay.style.display === 'flex') closeCase();
-    });
+    // 3. Back Button Handler
+    const backBtn = document.getElementById('back-btn');
+    if (backBtn) {
+        backBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const demoFullscreen = document.getElementById('demoFullscreen');
+            if (demoFullscreen) demoFullscreen.classList.remove('open');
+            const demoFrame = document.getElementById('demoFrame');
+            if (demoFrame) demoFrame.src = '';
+            if (typeof closeCase === 'function') closeCase();
+        });
+    }
 
     panelBody.addEventListener('scroll', () => {
       const max = panelBody.scrollHeight - panelBody.clientHeight;
