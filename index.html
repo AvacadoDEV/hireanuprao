@@ -160,6 +160,14 @@
       .grid { grid-template-columns: 1fr; }
       .case-1, .case-2, .case-3, .case-4, .case-5, .case-6, .case-7, .case-8 { grid-column: 1; grid-row: auto; }
       .hero h1 { font-size: 30px; }
+      nav .container { padding: 0 16px; height: 56px; }
+      .brand { font-size: 15px; white-space: nowrap; }
+      .nav-links { gap: 14px; font-size: 12.5px; }
+      .nav-links a { white-space: nowrap; }
+      .nav-link-external { display: none; }
+    }
+    @media (max-width: 380px) {
+      .nav-links { gap: 10px; font-size: 12px; }
     }
 
     /* ── RUBRIC TOOL ── */
@@ -502,7 +510,7 @@
     <iframe id="demoFrame" src="" title="Atlas Nova onboarding demo" allow="clipboard-write"></iframe>
   </div>
 
-  <script src="case-studies.js?v=3"></script>
+  <script src="case-studies.js?v=4"></script>
   <script>
     const colorMap = {
       accent: ['var(--c-accent-bg)', 'var(--c-accent-text)'],
@@ -638,9 +646,7 @@
 
       if (c.hasDemoIframe) {
         document.getElementById('demoPreviewCard').addEventListener('click', () => {
-          document.getElementById('demoFrame').src = c.demoSrc;
-          document.getElementById('demoFullscreen').classList.add('open');
-          document.body.style.overflow = 'hidden';
+          openDemoFullscreen(c.demoSrc, c.slug);
         });
       }
 
@@ -661,13 +667,44 @@
       setHash('');
     }
 
-    function closeDemoFullscreen() {
-      const fs = document.getElementById('demoFullscreen');
-      fs.classList.remove('open');
-      document.getElementById('demoFrame').src = '';
+    // Open the demo overlay on top of the case. Pushes a history state so
+    // browser-back closes just the demo (popstate handler catches it), and
+    // navigates the iframe via location.replace so the iframe itself doesn't
+    // add a browser history entry that would swallow the next back press.
+    function openDemoFullscreen(demoSrc, slug) {
+      history.pushState({ slug, demo: true }, '', location.pathname);
+      const frame = document.getElementById('demoFrame');
+      try {
+        frame.contentWindow.location.replace(demoSrc);
+      } catch (err) {
+        frame.src = demoSrc;
+      }
+      document.getElementById('demoFullscreen').classList.add('open');
+      document.body.style.overflow = 'hidden';
     }
 
-    document.getElementById('demoCloseBtn').addEventListener('click', closeDemoFullscreen);
+    function closeDemoFullscreen() {
+      const fs = document.getElementById('demoFullscreen');
+      if (!fs.classList.contains('open')) return;
+      fs.classList.remove('open');
+      const frame = document.getElementById('demoFrame');
+      try {
+        frame.contentWindow.location.replace('about:blank');
+      } catch (err) {
+        frame.src = '';
+      }
+    }
+
+    // Exit-demo button unwinds the demo history state so the URL stays clean.
+    // popstate then handles the visual close via the same code path as
+    // browser-back.
+    document.getElementById('demoCloseBtn').addEventListener('click', () => {
+      if (history.state && history.state.demo) {
+        history.back();
+      } else {
+        closeDemoFullscreen();
+      }
+    });
 
     const rubricFields = [
       { id: 'reach', label: 'reach', value: 6 },
@@ -796,11 +833,17 @@
     }
 
     // Unified Escape handler: demo fullscreen wins, then case overlay.
+    // For the demo, unwind through history so the URL stays consistent —
+    // popstate then closes the overlay via the same path as browser-back.
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape') return;
       const demoFullscreen = document.getElementById('demoFullscreen');
       if (demoFullscreen.classList.contains('open')) {
-        closeDemoFullscreen();
+        if (history.state && history.state.demo) {
+          history.back();
+        } else {
+          closeDemoFullscreen();
+        }
         return;
       }
       if (overlay.classList.contains('open')) closeCase();
@@ -824,8 +867,7 @@
     // Back button: fully tear down demo state, then close the case panel.
     document.getElementById('back-btn').addEventListener('click', (e) => {
       e.preventDefault();
-      document.getElementById('demoFullscreen').classList.remove('open');
-      document.getElementById('demoFrame').src = '';
+      closeDemoFullscreen();
       closeCase();
     });
 
@@ -866,6 +908,13 @@
     }
 
     window.addEventListener('popstate', (e) => {
+      // If the demo overlay is open and we're popping past its pushed state,
+      // just close the demo — don't route away from the case underneath.
+      const demoFullscreen = document.getElementById('demoFullscreen');
+      if (demoFullscreen.classList.contains('open')) {
+        closeDemoFullscreen();
+        return;
+      }
       isRoutingBack = true;
       const slug = (e.state && e.state.slug) || slugFromLocation();
       routeToSlug(slug);
