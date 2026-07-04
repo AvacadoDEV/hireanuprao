@@ -807,8 +807,16 @@
     });
 
     // Backdrop click closes the case, unless the demo fullscreen is active.
+    // Guard against text-selection drags: only close when the press started on
+    // the backdrop too — otherwise a drag that ends outside the panel closes it.
+    let backdropPressed = false;
+    overlay.addEventListener('mousedown', (e) => {
+      backdropPressed = e.target === overlay;
+    });
     overlay.addEventListener('click', (e) => {
-      if (e.target !== overlay) return;
+      const startedOnBackdrop = backdropPressed;
+      backdropPressed = false;
+      if (!startedOnBackdrop || e.target !== overlay) return;
       if (document.getElementById('demoFullscreen').classList.contains('open')) return;
       closeCase();
     });
