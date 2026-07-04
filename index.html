@@ -645,6 +645,7 @@
       }
 
       overlay.style.display = 'flex';
+      overlay.classList.add('open');
       document.body.style.overflow = 'hidden';
       document.body.classList.add('reading-mode');
       setHash(c.slug);
@@ -654,6 +655,7 @@
 
     function closeCase() {
       overlay.style.display = 'none';
+      overlay.classList.remove('open');
       document.body.style.overflow = '';
       document.body.classList.remove('reading-mode');
       setHash('');
@@ -666,11 +668,6 @@
     }
 
     document.getElementById('demoCloseBtn').addEventListener('click', closeDemoFullscreen);
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && document.getElementById('demoFullscreen').classList.contains('open')) {
-        closeDemoFullscreen();
-      }
-    });
 
     const rubricFields = [
       { id: 'reach', label: 'reach', value: 6 },
@@ -792,51 +789,37 @@
       updateRubric();
 
       overlay.style.display = 'flex';
+      overlay.classList.add('open');
       document.body.style.overflow = 'hidden';
       document.body.classList.add('reading-mode');
       setHash('rubric');
     }
 
-    // 1. Escape Key Handler
-    window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            const demoFullscreen = document.getElementById('demoFullscreen');
-            if (demoFullscreen && demoFullscreen.classList.contains('open')) {
-                demoFullscreen.classList.remove('open');
-                const demoFrame = document.getElementById('demoFrame');
-                if (demoFrame) demoFrame.src = '';
-                return;
-            }
-            if (typeof closeCase === 'function') closeCase();
-        }
-    }, true);
+    // Unified Escape handler: demo fullscreen wins, then case overlay.
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      const demoFullscreen = document.getElementById('demoFullscreen');
+      if (demoFullscreen.classList.contains('open')) {
+        closeDemoFullscreen();
+        return;
+      }
+      if (overlay.classList.contains('open')) closeCase();
+    });
 
-    // 2. Overlay Click Handler
-    const overlayEl = document.getElementById('overlay');
-    if (overlayEl) {
-        const cleanOverlay = overlayEl.cloneNode(true);
-        overlayEl.parentNode.replaceChild(cleanOverlay, overlayEl);
-        cleanOverlay.addEventListener('click', (e) => {
-            const panel = cleanOverlay.querySelector('.panel') || cleanOverlay.firstElementChild;
-            const demoFullscreen = document.getElementById('demoFullscreen');
-            if (panel && panel.contains(e.target)) return;
-            if (demoFullscreen && demoFullscreen.classList.contains('open')) return;
-            if (typeof closeCase === 'function') closeCase();
-        });
-    }
+    // Backdrop click closes the case, unless the demo fullscreen is active.
+    overlay.addEventListener('click', (e) => {
+      if (e.target !== overlay) return;
+      if (document.getElementById('demoFullscreen').classList.contains('open')) return;
+      closeCase();
+    });
 
-    // 3. Back Button Handler
-    const backBtn = document.getElementById('back-btn');
-    if (backBtn) {
-        backBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const demoFullscreen = document.getElementById('demoFullscreen');
-            if (demoFullscreen) demoFullscreen.classList.remove('open');
-            const demoFrame = document.getElementById('demoFrame');
-            if (demoFrame) demoFrame.src = '';
-            if (typeof closeCase === 'function') closeCase();
-        });
-    }
+    // Back button: fully tear down demo state, then close the case panel.
+    document.getElementById('back-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('demoFullscreen').classList.remove('open');
+      document.getElementById('demoFrame').src = '';
+      closeCase();
+    });
 
     panelBody.addEventListener('scroll', () => {
       const max = panelBody.scrollHeight - panelBody.clientHeight;
