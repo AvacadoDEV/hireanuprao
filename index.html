@@ -778,6 +778,12 @@
       } catch (err) {
         frame.src = '';
       }
+      // If nothing is behind the demo (opened directly at /atlas-nova), restore
+      // body scroll. Otherwise the case-study panel underneath is still open
+      // and needs to stay overflow:hidden.
+      if (overlay.style.display !== 'flex') {
+        document.body.style.overflow = '';
+      }
     }
 
     // Exit-demo button unwinds the demo history state so the URL stays clean.
