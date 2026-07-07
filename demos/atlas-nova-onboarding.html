@@ -69,6 +69,21 @@
     align-items:center;
     gap:6px;
   }
+  .writeup-link{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--text-dim);
+    text-decoration:none;
+    padding:6px 12px;
+    border-radius:20px;
+    border:1px solid var(--line);
+    transition:color 0.2s ease, border-color 0.2s ease;
+    white-space:nowrap;
+  }
+  .writeup-link:hover{
+    color:var(--text);
+    border-color:var(--text-dim);
+  }
   main{
     flex:1;
     display:grid;
@@ -269,6 +284,7 @@
 <header>
   <div class="wordmark"><span class="dot"></span>ATLAS <span class="sub">onboarding teammate</span></div>
   <div style="display:flex; align-items:center; gap:10px;">
+    <a href="/atlas-nova-instalily-demo" target="_top" class="writeup-link">read the writeup →</a>
     <span class="streak" id="modeBadge" style="background:var(--surface-2); color:var(--text-dim);"></span>
     <div class="streak" id="streakBadge">🔥 Loop 1</div>
   </div>

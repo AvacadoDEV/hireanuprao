@@ -788,6 +788,11 @@
         history.back();
       } else {
         closeDemoFullscreen();
+        // Demo was opened directly at /atlas-nova — reset URL to landing without
+        // pushing a new history entry.
+        if (location.pathname !== '/') {
+          history.replaceState({ slug: null }, '', '/');
+        }
       }
     });
 
@@ -977,9 +982,24 @@
     function routeToSlug(slug) {
       if (!slug) { closeCase(); return; }
       if (slug === 'rubric') { openRubric(); return; }
+      if (slug === 'atlas-nova') { openDemoDirect(); return; }
       const i = caseStudies.findIndex(c => c.slug === slug);
       if (i !== -1) openCase(i);
       else closeCase();
+    }
+
+    // Direct-demo route: /atlas-nova opens the fullscreen demo without stacking
+    // a case-study panel underneath. Close returns to /.
+    function openDemoDirect() {
+      const demoSrc = 'demos/atlas-nova-onboarding.html';
+      const frame = document.getElementById('demoFrame');
+      try {
+        frame.contentWindow.location.replace(demoSrc);
+      } catch (err) {
+        frame.src = demoSrc;
+      }
+      document.getElementById('demoFullscreen').classList.add('open');
+      document.body.style.overflow = 'hidden';
     }
 
     function slugFromLocation() {
