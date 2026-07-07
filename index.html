@@ -757,7 +757,9 @@
     // navigates the iframe via location.replace so the iframe itself doesn't
     // add a browser history entry that would swallow the next back press.
     function openDemoFullscreen(demoSrc, slug) {
-      history.pushState({ slug, demo: true }, '', location.pathname);
+      // Push /atlas-nova as the URL for the demo view so it's shareable, and
+      // the writeup URL is what browser-back returns to.
+      history.pushState({ slug, demo: true }, '', '/atlas-nova');
       const frame = document.getElementById('demoFrame');
       try {
         frame.contentWindow.location.replace(demoSrc);
