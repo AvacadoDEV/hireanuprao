@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Anup Rao — Product Manager, case studies</title>
   <link rel="icon" type="image/jpeg" href="avatar.jpeg" />
-  <meta name="description" content="Anup Rao, product manager. Six short case studies on product building: zero to one, teardowns, redesigns, go to market, saying no, and AI ranking." />
+  <meta name="description" content="Anup Rao, product manager. Eight short case studies on product building: zero to one, teardowns, redesigns, go to market, saying no, AI ranking, and two shipped prototypes." />
   <meta property="og:title" content="Anup Rao — Product case studies" />
-  <meta property="og:description" content="Six short case studies on product decisions, not a resume." />
+  <meta property="og:description" content="Eight short case studies on product decisions, not a resume." />
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TWK7ERS530"></script>
   <script>
@@ -217,10 +217,11 @@
     .case-6 { grid-column: 1 / 7; grid-row: span 1; }
     .case-7 { grid-column: 1 / 7; grid-row: span 1; }
     .case-8 { grid-column: 1 / 7; grid-row: span 1; }
+    .case-9 { grid-column: 1 / 7; grid-row: span 1; }
 
     @media (max-width: 760px) {
       .grid { grid-template-columns: 1fr; }
-      .case-1, .case-2, .case-3, .case-4, .case-5, .case-6, .case-7, .case-8 { grid-column: 1; grid-row: auto; }
+      .case-1, .case-2, .case-3, .case-4, .case-5, .case-6, .case-7, .case-8, .case-9 { grid-column: 1; grid-row: auto; }
       .hero h1 { font-size: 30px; }
       nav .container { padding: 0 16px; height: 56px; }
       .brand { font-size: 15px; white-space: nowrap; }
@@ -440,6 +441,32 @@
       letter-spacing: 0.04em;
     }
 
+    /* ── LIVE-LINK VARIANT (anchor styled like the demo card, lime accent) ── */
+    .demo-preview-card.live {
+      border-color: rgba(212, 255, 79, 0.22);
+      text-decoration: none;
+      color: inherit;
+    }
+    .demo-preview-card.live::before {
+      background: radial-gradient(ellipse at center, rgba(212,255,79,0.06) 0%, transparent 70%);
+    }
+    .demo-preview-card.live:hover { border-color: rgba(212, 255, 79, 0.5); }
+    .demo-preview-card.live .demo-preview-wordmark { color: rgba(212, 255, 79, 0.75); }
+    .demo-preview-card.live .demo-preview-wordmark .dot {
+      background: #d4ff4f;
+      box-shadow: 0 0 8px #d4ff4f;
+    }
+    .demo-preview-card.live .demo-play-btn {
+      border-color: rgba(212, 255, 79, 0.55);
+      background: rgba(212, 255, 79, 0.08);
+    }
+    .demo-preview-card.live:hover .demo-play-btn {
+      background: rgba(212, 255, 79, 0.16);
+      border-color: #d4ff4f;
+      transform: scale(1.08);
+    }
+    .demo-preview-card.live .demo-play-btn svg { margin-left: 0; }
+
     /* ── DEMO FULLSCREEN OVERLAY ── */
     #demoFullscreen {
       position: fixed;
@@ -549,7 +576,7 @@
     <div class="hero">
       <p class="kicker">product manager</p>
       <h1>I build the thing, then write down why it worked.</h1>
-      <p>seven short case studies on real products. the problem they faced, the bet they made, what shipped, and what I'd have pushed back on. plus a live rubric for scoring feature requests.</p>
+      <p>eight short case studies on real products. the problem they faced, the bet they made, what shipped, and what I'd have pushed back on. plus a live rubric for scoring feature requests.</p>
     </div>
 
     <div class="grid" id="grid"></div>
@@ -591,7 +618,7 @@
     <iframe id="demoFrame" src="" title="Atlas Nova onboarding demo" allow="clipboard-write"></iframe>
   </div>
 
-  <script src="case-studies.js?v=4"></script>
+  <script src="case-studies.js?v=5"></script>
   <script>
     const colorMap = {
       accent: ['var(--c-accent-bg)', 'var(--c-accent-text)'],
@@ -669,7 +696,7 @@
     });
 
     const rubricCard = document.createElement('div');
-    rubricCard.className = 'case-card case-8';
+    rubricCard.className = 'case-card case-9';
     rubricCard.innerHTML = `
       <div>
         <div class="top-row">
@@ -720,7 +747,20 @@
         </div>
       ` : '';
 
-      panelBody.innerHTML = textSections + previewSection;
+      const liveSection = c.hasLiveLink ? `
+        <div class="demo-preview-block">
+          <p class="s-heading">see it live</p>
+          <a class="demo-preview-card live" href="${c.liveUrl}" target="_blank" rel="noopener">
+            <div class="demo-preview-wordmark"><span class="dot"></span>RESURFACE &nbsp;·&nbsp; CATALOG TRIAGE</div>
+            <div class="demo-play-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#d4ff4f" stroke-width="2" width="22" height="22"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="demo-preview-hint">opens ${c.liveLabel} in a new tab</div>
+          </a>
+        </div>
+      ` : '';
+
+      panelBody.innerHTML = textSections + previewSection + liveSection;
       panelBody.classList.add('snap');
       document.getElementById('d-progress').style.width = '6%';
 
@@ -757,9 +797,7 @@
     // navigates the iframe via location.replace so the iframe itself doesn't
     // add a browser history entry that would swallow the next back press.
     function openDemoFullscreen(demoSrc, slug) {
-      // Push /atlas-nova as the URL for the demo view so it's shareable, and
-      // the writeup URL is what browser-back returns to.
-      history.pushState({ slug, demo: true }, '', '/atlas-nova');
+      history.pushState({ slug, demo: true }, '', location.pathname);
       const frame = document.getElementById('demoFrame');
       try {
         frame.contentWindow.location.replace(demoSrc);
@@ -780,12 +818,6 @@
       } catch (err) {
         frame.src = '';
       }
-      // If nothing is behind the demo (opened directly at /atlas-nova), restore
-      // body scroll. Otherwise the case-study panel underneath is still open
-      // and needs to stay overflow:hidden.
-      if (overlay.style.display !== 'flex') {
-        document.body.style.overflow = '';
-      }
     }
 
     // Exit-demo button unwinds the demo history state so the URL stays clean.
@@ -796,11 +828,6 @@
         history.back();
       } else {
         closeDemoFullscreen();
-        // Demo was opened directly at /atlas-nova — reset URL to landing without
-        // pushing a new history entry.
-        if (location.pathname !== '/') {
-          history.replaceState({ slug: null }, '', '/');
-        }
       }
     });
 
@@ -982,41 +1009,47 @@
 
     function setHash(slug) {
       if (isRoutingBack) return;
-      const target = slug ? '/' + slug : '/';
-      if (location.pathname === target) return;
-      history.pushState({ slug: slug || null }, '', target);
+      try {
+        const target = slug ? './' + slug : './';
+        // Use window location validation before pushing state to protect the execution loop
+        if (window.location.protocol === 'file:') {
+          // If running on a local file scheme, use standard hash routing to prevent SecurityErrors
+          window.location.hash = slug ? slug : '';
+        } else {
+          const absoluteTarget = slug ? '/' + slug : '/';
+          if (location.pathname === absoluteTarget) return;
+          history.pushState({ slug: slug || null }, '', absoluteTarget);
+        }
+      } catch (error) {
+        console.warn("Local history pushState routing blocked by browser security policy. Bypassing safely:", error);
+      }
     }
 
     function routeToSlug(slug) {
       if (!slug) { closeCase(); return; }
       if (slug === 'rubric') { openRubric(); return; }
-      if (slug === 'atlas-nova') { openDemoDirect(); return; }
       const i = caseStudies.findIndex(c => c.slug === slug);
       if (i !== -1) openCase(i);
       else closeCase();
     }
 
-    // Direct-demo route: /atlas-nova opens the fullscreen demo without stacking
-    // a case-study panel underneath. Close returns to /.
-    function openDemoDirect() {
-      const demoSrc = 'demos/atlas-nova-onboarding.html';
-      const frame = document.getElementById('demoFrame');
-      try {
-        frame.contentWindow.location.replace(demoSrc);
-      } catch (err) {
-        frame.src = demoSrc;
-      }
-      document.getElementById('demoFullscreen').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-
     function slugFromLocation() {
       let path = location.pathname.replace(/^\/+/, '').replace(/\/+$/, '');
+      // On file:// protocol, path is empty; read from hash instead so hash-fallback routing works both ways
+      if (window.location.protocol === 'file:' && !path) {
+        path = (location.hash || '').replace(/^#\/?/, '').replace(/\/+$/, '');
+      }
       const ss = sessionStorage.getItem('spa-redirect-path');
       if (ss) {
         sessionStorage.removeItem('spa-redirect-path');
         path = ss.replace(/^\/+/, '').replace(/\/+$/, '');
-        history.replaceState({ slug: path || null }, '', '/' + path);
+        try {
+          if (window.location.protocol !== 'file:') {
+            history.replaceState({ slug: path || null }, '', '/' + path);
+          }
+        } catch (error) {
+          console.warn("Local history replaceState routing blocked by browser security policy. Bypassing safely:", error);
+        }
       }
       return path;
     }
@@ -1071,19 +1104,95 @@
           magCursor.textContent = '';
         });
       });
+      // Clean Class-Based Observer to prevent layout deadlocks
       const hideOnOverlay = new MutationObserver(() => {
-        if (overlay.style.display === 'flex' || document.getElementById('demoFullscreen').classList.contains('open')) {
-          magCursor.classList.add('hidden');
+        const overlayEl = document.getElementById('overlay');
+        const demoEl = document.getElementById('demoFullscreen');
+        const magCursorEl = document.getElementById('magCursor') || document.querySelector('.custom-cursor');
+
+        if (!magCursorEl) return;
+
+        // Safely check layout states using query selection to protect the loop
+        const isOverlayVisible = overlayEl && (overlayEl.style.display === 'flex' || overlayEl.classList.contains('reading-mode'));
+        const isDemoVisible = demoEl && demoEl.classList.contains('open');
+
+        if (isOverlayVisible || isDemoVisible) {
+          if (!magCursorEl.classList.contains('hidden')) {
+            magCursorEl.classList.add('hidden');
+          }
         } else {
-          magCursor.classList.remove('hidden');
+          magCursorEl.classList.remove('hidden');
         }
       });
-      hideOnOverlay.observe(overlay, { attributes: true, attributeFilter: ['style'] });
+
+      const targetOverlay = document.getElementById('overlay');
+      if (targetOverlay) {
+        // Relax the observer filter rules so it never falls into an infinite inline style loop
+        hideOnOverlay.observe(targetOverlay, { attributes: true, attributeFilter: ['class', 'style'] });
+      }
       hideOnOverlay.observe(document.getElementById('demoFullscreen'), { attributes: true, attributeFilter: ['class'] });
     } else {
       magCursor.style.display = 'none';
     }
 
+  </script>
+
+  <!-- Safe Additive Coordinate-Based UI Router -->
+  <script>
+  (function() {
+    // 1. Pixel Bounding Box Outside-Click Router
+    document.addEventListener('click', function(e) {
+      const overlayEl = document.getElementById('overlay');
+      // If modal overlay isn't active, ignore clicks entirely
+      if (!overlayEl || overlayEl.style.display !== 'flex') return;
+
+      // Target the inner scrollable white content panel card
+      const panelCard = document.querySelector('#overlay .panel') || document.querySelector('#overlay [class*="content"]');
+      const demoEl = document.getElementById('demoFullscreen');
+
+      // Safety check: Don't close if a live full-screen iframe mockup is running
+      if (demoEl && demoEl.classList.contains('open')) return;
+
+      if (panelCard) {
+        // Get the exact physical screen pixel boundaries of the project card box
+        const rect = panelCard.getBoundingClientRect();
+
+        // If the mouse coordinates fall completely outside the box, trigger close
+        const clickedOutsideBox = (
+          e.clientX < rect.left ||
+          e.clientX > rect.right ||
+          e.clientY < rect.top ||
+          e.clientY > rect.bottom
+        );
+
+        if (clickedOutsideBox && typeof window.closeCase === 'function') {
+          window.closeCase();
+          // Force restore scrolling immediately on the body container
+          document.body.style.overflow = '';
+          document.documentElement.style.overflow = '';
+        }
+      }
+    }, true);
+
+    // 2. Global Escape Key Router with Scroll Release
+    document.addEventListener('keydown', function(e) {
+      if (e.key !== 'Escape') return;
+
+      const overlayEl = document.getElementById('overlay');
+      const demoEl = document.getElementById('demoFullscreen');
+
+      if (demoEl && demoEl.classList.contains('open')) return;
+
+      if (overlayEl && overlayEl.style.display === 'flex') {
+        if (typeof window.closeCase === 'function') {
+          window.closeCase();
+          // Force release any structural layout body scrolling locks
+          document.body.style.overflow = '';
+          document.documentElement.style.overflow = '';
+        }
+      }
+    }, true);
+  })();
   </script>
 
 </body>
